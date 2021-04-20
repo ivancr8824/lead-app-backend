@@ -59,8 +59,10 @@ const listLeads = async (req, res = response) => {
             Id: x.Id,
             Name: x.Name,
             Phone: x.Phone,
-            Email: x.Email
-        })).slice(startIndex, endIndex);
+            Email: x.Email,
+            StatusLead: x.StatusLeads,
+            StatusRegister: x.StatusRegister
+        })).slice(startIndex, endIndex).filter(r => r.StatusRegister === 'Activo');
 
         res.json({
             ok: true,
