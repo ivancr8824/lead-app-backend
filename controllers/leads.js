@@ -55,14 +55,16 @@ const listLeads = async (req, res = response) => {
         const endIndex = page * limit;
 
         //Obtengo los resultados paginados
-        const results = rows.map(x => ({
+        let results = rows.map(x => ({
             Id: x.Id,
             Name: x.Name,
             Phone: x.Phone,
             Email: x.Email,
             StatusLead: x.StatusLeads,
             StatusRegister: x.StatusRegister
-        })).slice(startIndex, endIndex).filter(r => r.StatusRegister === 'Activo');
+        }))
+        .filter(r => r.StatusRegister === 'Activo')
+        .slice(startIndex, endIndex);
 
         res.json({
             ok: true,
