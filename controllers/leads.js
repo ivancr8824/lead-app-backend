@@ -82,6 +82,61 @@ const listLeads = async (req, res = response) => {
     }
 }
 
+const searchLeads = async(req, res = response) => {
+    try {
+        const search = req.query.search;
+        const page = req.params.page;
+        const limit = req.params.limit;
+
+        const document = await credentialsGoogle();
+
+        const sheet = document.sheetsByIndex[0];
+        const rows = await sheet.getRows();
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        //Obtengo los resultados paginados
+        const results = rows.map(x => ({
+            Id: x.Id,
+            Name: x.Name,
+            Phone: x.Phone,
+            Email: x.Email,
+            StatusLead: x.StatusLeads,
+            StatusRegister: x.StatusRegister
+        }))
+        .filter(r => r.StatusRegister === 'Activo' && 
+                    (
+                     r.Name.toLowerCase().includes(search.toLowerCase()) || 
+                     r.Phone.includes(search) ||
+                     r.Email.includes(search.toLowerCase())
+                    )
+                )
+        .slice(startIndex, endIndex);
+
+        const totalRegistros = rows.filter(x => x.StatusRegister === 'Activo' && 
+                                            (
+                                                x.Name.toLowerCase().includes(search.toLowerCase()) ||
+                                                x.Phone.includes(search) ||
+                                                x.Email.includes(search.toLowerCase())
+                                            )
+                                          ).length;
+
+        res.json({
+            ok: true,
+            totalPages: Math.ceil(totalRegistros / limit),
+            totalRegistros: totalRegistros,
+            leads: results
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el Administrador'
+        });
+    }
+}
+
 const updateLead = async (req, res = response) => {
     try {
         const id = req.params.id;
@@ -144,6 +199,7 @@ const deleteLead = async(req, res = response) => {
 module.exports = {
     saveLead,
     listLeads,
+    searchLeads,
     updateLead,
     deleteLead
 }

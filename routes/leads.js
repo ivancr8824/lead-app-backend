@@ -1,11 +1,13 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { saveLead, listLeads, updateLead, deleteLead } = require('../controllers/leads');
+const { saveLead, listLeads, updateLead, deleteLead, searchLeads } = require('../controllers/leads');
 const { validarCampos } = require('../middleware/valida-campos');
 
 const router = Router();
 
 router.get('/:page/:limit', listLeads);
+
+router.get('/search/:page/:limit', searchLeads);
 
 router.post(
     '/new', 
