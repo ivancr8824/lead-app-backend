@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { saveLead, listLeads, updateLead, deleteLead, searchLeads } = require('../controllers/leads');
+const { saveLead, listLeads, updateLead, deleteLead, searchLeads, allLeads } = require('../controllers/leads');
 const { validarCampos } = require('../middleware/valida-campos');
 
 const router = Router();
@@ -8,6 +8,8 @@ const router = Router();
 router.get('/:page/:limit', listLeads);
 
 router.get('/search/:page/:limit', searchLeads);
+
+router.get('/all', allLeads);
 
 router.post(
     '/new', 

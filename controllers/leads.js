@@ -82,6 +82,38 @@ const listLeads = async (req, res = response) => {
     }
 }
 
+const allLeads = async (req, res = response) => {
+    try {
+        const document = await credentialsGoogle();
+
+        const sheet = document.sheetsByIndex[0];
+        const rows = await sheet.getRows();
+
+        //Obtengo los resultados paginados
+        let results = rows.map(x => ({
+            Id: x.Id,
+            Name: x.Name,
+            Phone: x.Phone,
+            Email: x.Email,
+            StatusLead: x.StatusLeads,
+            StatusRegister: x.StatusRegister
+        })).filter(r => r.StatusRegister === 'Activo')
+
+        res.json({
+            ok: true,
+            leads: results
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el Administrador'
+        });
+    }
+}
+
+
 const searchLeads = async(req, res = response) => {
     try {
         const search = req.query.search;
@@ -199,6 +231,7 @@ const deleteLead = async(req, res = response) => {
 module.exports = {
     saveLead,
     listLeads,
+    allLeads,
     searchLeads,
     updateLead,
     deleteLead
