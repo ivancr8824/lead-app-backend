@@ -66,7 +66,9 @@ const listLeads = async (req, res = response) => {
         .filter(r => r.StatusRegister === 'Activo')
         .slice(startIndex, endIndex);
 
-        let totalPages = (results.length == 0) ? page - 1 : Math.ceil(rows.length / limit);
+        const totalRowsFilters = rows.filter(r => r.StatusRegister === 'Activo').length
+
+        let totalPages = (results.length == 0) ? page - 1 : Math.ceil(totalRowsFilters / limit);
 
         if(rows.filter(r => r.StatusRegister === 'Activo').length === 0){
             totalPages = 1
@@ -75,7 +77,7 @@ const listLeads = async (req, res = response) => {
         res.json({
             ok: true,
             totalPages: (totalPages === 0) ? 1 : totalPages,
-            totalRegistros: rows.filter(r => r.StatusRegister === 'Activo').length,
+            totalRegistros: totalRowsFilters,
             leads: results
         });
 
@@ -180,7 +182,7 @@ const searchLeads = async(req, res = response) => {
             totalRegistros: totalRegistros,
             leads: results
         });
-        
+
     } catch (error) {
         console.log(error)
         res.status(500).json({
