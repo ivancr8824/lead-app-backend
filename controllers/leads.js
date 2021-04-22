@@ -66,10 +66,16 @@ const listLeads = async (req, res = response) => {
         .filter(r => r.StatusRegister === 'Activo')
         .slice(startIndex, endIndex);
 
+        let totalPages = (results.length == 0) ? page - 1 : Math.ceil(rows.length / limit);
+
+        if(rows.filter(r => r.StatusRegister === 'Activo').length === 0){
+            totalPages = 1
+        }
+
         res.json({
             ok: true,
-            totalPages: Math.ceil(rows.length / limit),
-            totalRegistros: rows.length,
+            totalPages: (totalPages === 0) ? 1 : totalPages,
+            totalRegistros: rows.filter(r => r.StatusRegister === 'Activo').length,
             leads: results
         });
 
@@ -154,12 +160,27 @@ const searchLeads = async(req, res = response) => {
                                             )
                                           ).length;
 
+
+        // let totalPages = (results.length == 0) ? page - 1 : Math.ceil(rows.length / limit);
+
+        // if(rows.filter(r => r.StatusRegister === 'Activo').length === 0){
+        //     totalPages = 1
+        // }
+
+        // res.json({
+        //     ok: true,
+        //     totalPages: (totalPages === 0) ? 1 : totalPages,
+        //     totalRegistros: rows.filter(r => r.StatusRegister === 'Activo').length,
+        //     leads: results
+        // });
+
         res.json({
             ok: true,
             totalPages: Math.ceil(totalRegistros / limit),
             totalRegistros: totalRegistros,
             leads: results
         });
+        
     } catch (error) {
         console.log(error)
         res.status(500).json({
