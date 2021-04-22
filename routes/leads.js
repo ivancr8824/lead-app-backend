@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { saveLead, listLeads, updateLead, deleteLead, searchLeads, allLeads } = require('../controllers/leads');
+const { saveLead, listLeads, updateLead, deleteLead, searchLeads, allLeads, sendEmail } = require('../controllers/leads');
 const { validarCampos } = require('../middleware/valida-campos');
 
 const router = Router();
@@ -35,5 +35,7 @@ router.put(
 )
 
 router.delete('/:id', deleteLead);
+
+router.post('/sendemail', sendEmail);
 
 module.exports = router;

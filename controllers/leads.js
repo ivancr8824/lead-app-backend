@@ -1,5 +1,6 @@
 const { response } = require('express');
 const { credentialsGoogle } = require('../database/google-sheet');
+const nodemailer = require('nodemailer');
 
 const saveLead = async (req, res = response) => {
     try {
@@ -251,11 +252,46 @@ const deleteLead = async(req, res = response) => {
     }
 }
 
+const sendEmail = (req, res = response) => {
+
+    const { emailLead } = req.body;
+
+    const mail = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+        user: process.env.EMAIL_CONSALUD,
+        pass: process.env.PASS_EMAIL
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_CONSALUD,
+        to: emailLead,
+        subject: 'Sending Email using Node.js',
+        html: '# Welcome That was easy!' 
+    }
+ 
+    mail.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return res.json({
+                ok: false,
+                msg: 'Error al enviar el email'
+            });
+        }
+
+        return res.json({
+            ok: true,
+            msg: 'El correo fue enviado de forma satisfactoria'
+        });
+    });
+}
+
 module.exports = {
     saveLead,
     listLeads,
     allLeads,
     searchLeads,
     updateLead,
-    deleteLead
+    deleteLead,
+    sendEmail
 }
