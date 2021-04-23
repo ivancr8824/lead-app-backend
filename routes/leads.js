@@ -16,6 +16,7 @@ router.post(
     [
         check('name', 'El nombre es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
+        check('countrie', 'El Pais es obligatorio').not().isEmpty(),
         check('phone', 'El Telefono es obligatorio').not().isEmpty(),
         validarCampos
     ] ,
@@ -28,6 +29,7 @@ router.put(
         check('name', 'El nombre es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
         check('phone', 'El Telefono es obligatorio').not().isEmpty(),
+        check('countrie', 'El Pais es obligatorio').not().isEmpty(),
         check('statusLeads', 'El Telefono es obligatorio').not().isEmpty(),
         validarCampos
     ],

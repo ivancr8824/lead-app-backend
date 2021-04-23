@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 const saveLead = async (req, res = response) => {
     try {
 
-        const { name, email, phone } = req.body;
+        const { name, email, phone, countrie } = req.body;
         let id = 0;
 
         const document = await credentialsGoogle();
@@ -19,7 +19,8 @@ const saveLead = async (req, res = response) => {
             Id: id, 
             Name: name, 
             Phone: phone, 
-            Email: email, 
+            Email: email,
+            Countrie: countrie,
             StatusLeads: 'Abierto', 
             StatusRegister: 'Activo'
         }
@@ -61,6 +62,7 @@ const listLeads = async (req, res = response) => {
             Name: x.Name,
             Phone: x.Phone,
             Email: x.Email,
+            Countrie: x.Countrie,
             StatusLead: x.StatusLeads,
             StatusRegister: x.StatusRegister
         }))
@@ -104,6 +106,7 @@ const allLeads = async (req, res = response) => {
             Name: x.Name,
             Phone: x.Phone,
             Email: x.Email,
+            Countrie: x.Countrie,
             StatusLead: x.StatusLeads,
             StatusRegister: x.StatusRegister
         })).filter(r => r.StatusRegister === 'Activo')
@@ -143,6 +146,7 @@ const searchLeads = async(req, res = response) => {
             Name: x.Name,
             Phone: x.Phone,
             Email: x.Email,
+            Countrie: x.Countrie,
             StatusLead: x.StatusLeads,
             StatusRegister: x.StatusRegister
         }))
@@ -163,20 +167,6 @@ const searchLeads = async(req, res = response) => {
                                             )
                                           ).length;
 
-
-        // let totalPages = (results.length == 0) ? page - 1 : Math.ceil(rows.length / limit);
-
-        // if(rows.filter(r => r.StatusRegister === 'Activo').length === 0){
-        //     totalPages = 1
-        // }
-
-        // res.json({
-        //     ok: true,
-        //     totalPages: (totalPages === 0) ? 1 : totalPages,
-        //     totalRegistros: rows.filter(r => r.StatusRegister === 'Activo').length,
-        //     leads: results
-        // });
-
         res.json({
             ok: true,
             totalPages: Math.ceil(totalRegistros / limit),
@@ -196,7 +186,7 @@ const searchLeads = async(req, res = response) => {
 const updateLead = async (req, res = response) => {
     try {
         const id = req.params.id;
-        const { name, email, phone, statusLeads } = req.body;
+        const { name, email, phone, countrie, statusLeads } = req.body;
 
         const document = await credentialsGoogle();
 
@@ -207,6 +197,7 @@ const updateLead = async (req, res = response) => {
         rows[id - 1].Name = name
         rows[id - 1].Phone = phone
         rows[id - 1].Email = email
+        rows[id - 1].Countrie = countrie
         rows[id - 1].StatusLeads = statusLeads
 
         await rows[id - 1].save();
@@ -268,7 +259,14 @@ const sendEmail = (req, res = response) => {
         from: process.env.EMAIL_CONSALUD,
         to: emailLead,
         subject: 'Sending Email using Node.js',
-        html: '# Welcome That was easy!' 
+        html: '# Welcome That was easy!',
+        // attachments: [{   // filename and content type is derived from path
+        //     path: '/path/to/file.txt'
+        // },
+        // {   // use URL as an attachment
+        //     filename: 'license.txt',
+        //     path: 'https://raw.github.com/nodemailer/nodemailer/master/LICENSE'
+        // }]
     }
  
     mail.sendMail(mailOptions, (error, info) => {
