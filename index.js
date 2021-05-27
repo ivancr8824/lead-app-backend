@@ -16,6 +16,7 @@ app.use(express.json());
 
 //Rutas
 app.use('/api/leads', require('./routes/leads'));
+app.use('/api/campaign', require('./routes/campaign'));
 
 //Escuchar peticiones
 app.listen(process.env.PORT, () => {
