@@ -31,8 +31,9 @@ const sendEmail = async(req, res = response) => {
     const rows = await sheet.getRows();
 
     const mail = nodemailer.createTransport({
-        service: 'gmail',
         host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
             user: process.env.EMAIL_CONSALUD,
             pass: process.env.PASS_EMAIL
