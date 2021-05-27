@@ -50,7 +50,7 @@ const sendEmail = async(req, res = response) => {
     mail.sendMail(mailOptions, (error, info) => {
         if (error) {
 
-            console.log(error);
+            console.log("ERROR PERSONALIZADO", error);
 
             return res.json({
                 ok: false,
