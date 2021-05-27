@@ -31,10 +31,12 @@ const sendEmail = async(req, res = response) => {
     const rows = await sheet.getRows();
 
     const mail = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
-        user: process.env.EMAIL_CONSALUD,
-        pass: process.env.PASS_EMAIL
+            user: process.env.EMAIL_CONSALUD,
+            pass: process.env.PASS_EMAIL
         }
     });
 
