@@ -47,6 +47,8 @@ const sendEmail = async(req, res = response) => {
         html
     };
 
+    console.log(mailOptions);
+
     mail.sendMail(mailOptions, (error, info) => {
         if (error) {
             return res.json({
