@@ -46,11 +46,12 @@ const sendEmail = async(req, res = response) => {
         subject: rows[id - 1].Subject,
         html
     };
-
-    console.log(mailOptions);
-
+    
     mail.sendMail(mailOptions, (error, info) => {
         if (error) {
+
+            console.log(error);
+
             return res.json({
                 ok: false,
                 msg: 'Error al enviar el email'
