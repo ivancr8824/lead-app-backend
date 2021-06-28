@@ -1,6 +1,8 @@
 const { response } = require('express');
 const { credentialsGoogle } = require('../database/google-sheet');
 const nodemailer = require('nodemailer');
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const saveLead = async (req, res = response) => {
     try {
@@ -243,15 +245,35 @@ const deleteLead = async(req, res = response) => {
     }
 }
 
-const sendEmail = (req, res = response) => {
+const sendEmail = async(req, res = response) => {
 
     const { emailLead } = req.body;
 
+    const oauth2Client = new OAuth2(
+        process.env.CLIENT_ID,
+        process.env.CLIENT_SECRET,
+        "https://developers.google.com/oauthplayground"
+    );
+
+    oauth2Client.setCredentials({
+        refresh_token: process.env.REFRESH_TOKEN
+    });
+
+    const accessToken = await oauth2Client.getAccessToken();
+
     const mail = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
-        user: process.env.EMAIL_CONSALUD,
-        pass: process.env.PASS_EMAIL
+            type: "OAuth2",
+            user: process.env.EMAIL_CONSALUD,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken
+        },
+        tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false
         }
     });
 
